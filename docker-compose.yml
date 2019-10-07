@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: nest
+      POSTGRES_PASSWORD: 1234
+    networks:
+      - prueba
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+  web:
+    build: .
+    restart: always
+    command: npm run start:prod
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - '3000:3000'
+    networks:
+      - prueba
+    depends_on:
+      - db
+networks:
+  default:
+    external:
+      name: nest-net
+  prueba:
+    # Use a custom driver
+    driver: bridge
